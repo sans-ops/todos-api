@@ -62,11 +62,18 @@ functions:
           path: hello
           method: GET
 
-  hola:
-    handler: user.hello
+  todos_list:
+    handler: todos.list
     events:
       - http:
-          path: hola
+          path: todos
+          method: GET
+
+  todos_get:
+    handler: todos.get
+    events:
+      - http:
+          path: todos/{id}
           method: GET
 
 
