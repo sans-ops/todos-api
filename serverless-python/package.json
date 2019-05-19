@@ -2,7 +2,9 @@
   "name": "todos-api",
   "description": "",
   "version": "0.1.0",
-  "dependencies": {},
+  "dependencies": {
+    "serverless": "^1.42.3"
+  },
   "devDependencies": {
     "serverless-plugin-warmup": "^4.5.3-rc.1",
     "serverless-python-requirements": "^4.3.0"

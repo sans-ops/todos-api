@@ -108,19 +108,26 @@ functions:
 #        - staging
 #        - prod
 
-  todos_set:
-    handler: todos.set
+  todos_create:
+    handler: todos.create
     events:
       - http:
           path: todos
           method: POST
 
-  todos_get:
-    handler: todos.get
+  todos_retrieve:
+    handler: todos.retrieve
     events:
       - http:
           path: todos/{id}
           method: GET
+
+  todos_update:
+    handler: todos.update
+    events:
+      - http:
+          path: todos/{id}
+          method: PATCH
 
   todos_delete:
     handler: todos.delete
@@ -128,7 +135,6 @@ functions:
       - http:
           path: todos/{id}
           method: DELETE
-
 
 
 #    The following are a few example events you can configure

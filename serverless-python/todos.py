@@ -22,7 +22,7 @@ def list(event, context):
 
 
 
-def set(event, context):
+def create(event, context):
     if not event["body"]:
         return error_response(500, "empty body")
     body = json.loads(event["body"])
@@ -44,7 +44,7 @@ def set(event, context):
 
 
 
-def get(event, context):
+def retrieve(event, context):
     data = []
     id = event["pathParameters"]["id"]
     for todo in Todo.batch_get([id]):
@@ -55,6 +55,33 @@ def get(event, context):
         }
         data.append(d)
     return data_response(200, data)
+
+
+
+def update(event, context):
+    data = []
+    if not event["body"]:
+        return error_response(500, "empty body")
+    body = json.loads(event["body"])
+    if "title" not in body:
+        return error_response(500, "no title given")
+    id = event["pathParameters"]["id"]
+    for todo in Todo.batch_get([id]):
+        todo.title = body["title"]
+        todo.update({
+            "title": {
+                "value": body["title"],
+                "action": "PUT"
+            }
+        })
+        d = {
+            "id": todo.id,
+            "title": todo.title,
+            "created_at": str(todo.created_at)
+        }
+        data.append(d)
+    return data_response(200, data)
+
 
 
 def delete(event, context):
