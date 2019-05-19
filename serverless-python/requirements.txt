@@ -1,1 +1,2 @@
 function-shield==1.2.7
+pynamodb==3.3.3

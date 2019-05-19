@@ -21,6 +21,26 @@ provider:
   name: aws
   runtime: python3.7
 
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:BatchGetItem
+        - dynamodb:BatchWriteItem
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:TransactGetItems
+        - dynamodb:TransactWriteItems
+      # Restrict our IAM role permissions to
+      # the specific table for the stage
+      Resource:
+        - "Fn::GetAtt": [ TodosTable, Arn ]
+        - "Fn::GetAtt": [ ItemsTable, Arn ]
+
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -62,17 +82,38 @@ functions:
           path: hello
           method: GET
 
+  hello_get:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello/{id}
+          method: GET
+
+  hello_post:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: POST
+
   todos_list:
     handler: todos.list
     events:
       - http:
           path: todos
           method: GET
-    warmup:
-      enabled:
-        - dev
-        - staging
-        - prod
+#    warmup:
+#      enabled:
+#        - dev
+#        - staging
+#        - prod
+
+  todos_set:
+    handler: todos.set
+    events:
+      - http:
+          path: todos
+          method: POST
 
   todos_get:
     handler: todos.get
@@ -80,6 +121,14 @@ functions:
       - http:
           path: todos/{id}
           method: GET
+
+  todos_delete:
+    handler: todos.delete
+    events:
+      - http:
+          path: todos/{id}
+          method: DELETE
+
 
 
 #    The following are a few example events you can configure
@@ -137,54 +186,19 @@ custom:
     vpc: false
     prewarm: true
     role: LambdaWarmupRole
+  tables:
+    todos:
+      name: "todos"
+      readCapacity: 1
+      writeCapacity: 1
+    items:
+      name: "items"
+      readCapacity: 1
+      writeCapacity: 1
 
 resources:
-  Resources:
-    LambdaWarmupRole:
-      Type: AWS::IAM::Role
-      Properties:
-        Path: /
-        RoleName: LambdaWarmupRole
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        Policies:
-          - PolicyName: myPolicyName
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow # WarmUp lamda to send logs to CloudWatch
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-                - Effect: Allow # WarmUp lamda to manage ENIS (only needed if deploying to VPC, https://docs.aws.amazon.com/lambda/latest/dg/vpc.html)
-                  Action:
-                    - ec2:CreateNetworkInterface
-                    - ec2:DescribeNetworkInterfaces
-                    - ec2:DetachNetworkInterface
-                    - ec2:DeleteNetworkInterface
-                  Resource: "*"
-                - Effect: 'Allow' # WarmUp lamda to invoke the functions to be warmed
-                  Action:
-                    - 'lambda:InvokeFunction'
-                  Resource:
-                  - Fn::Join:
-                    - ':'
-                    - - arn:aws:lambda
-                      - Ref: AWS::Region
-                      - Ref: AWS::AccountId
-                      - function:${self:service}-${opt:stage, self:provider.stage}-*
+  # warmup
+  - ${file(resources/warmup.yml)}
+
+  # tables
+  - ${file(resources/dynamodb-tables.yml)}
