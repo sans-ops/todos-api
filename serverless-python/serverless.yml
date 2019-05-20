@@ -184,7 +184,6 @@ functions:
 #       Value: "Some output value"
 
 plugins:
-  - serverless-dynalite
   - serverless-dynamodb-local
   - serverless-offline-python
   - serverless-plugin-warmup
