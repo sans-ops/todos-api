@@ -6,6 +6,9 @@
     "serverless": "^1.42.3"
   },
   "devDependencies": {
+    "serverless-dynamodb-local": "^0.2.37",
+    "serverless-offline": "^4.10.3",
+    "serverless-offline-python": "^3.22.0",
     "serverless-plugin-warmup": "^4.5.3-rc.1",
     "serverless-python-requirements": "^4.3.0"
   }

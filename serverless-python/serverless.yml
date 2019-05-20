@@ -19,7 +19,7 @@ service: todos-api # NOTE: update this with your service name
 
 provider:
   name: aws
-  runtime: python3.7
+  runtime: python3.6
 
   iamRoleStatements:
     - Effect: Allow
@@ -184,6 +184,9 @@ functions:
 #       Value: "Some output value"
 
 plugins:
+  - serverless-dynalite
+  - serverless-dynamodb-local
+  - serverless-offline-python
   - serverless-plugin-warmup
   - serverless-python-requirements
 
@@ -194,13 +197,23 @@ custom:
     role: LambdaWarmupRole
   tables:
     todos:
-      name: "todos"
+      name: todos
       readCapacity: 1
       writeCapacity: 1
     items:
-      name: "items"
+      name: items
       readCapacity: 1
       writeCapacity: 1
+
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 100m
+      heapMax: 200m
+      migrate: true
 
 resources:
   # warmup
