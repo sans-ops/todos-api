@@ -1,10 +1,15 @@
 import json
 import common.security
+from common.counter import Counter
+
+counter = Counter()
 
 def hello(event, context):
+    counter.increment()
     body = {
         "message": "Go Serverless v1.0! Your function executed successfully!",
-        "input": event
+        "input": event,
+        "counter": counter.identify()
     }
 
     response = {
