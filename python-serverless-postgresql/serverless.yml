@@ -44,8 +44,9 @@ provider:
 #            - "/*"
 
 # you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+  environment:
+    FUNCTION_SHIELD_TOKEN: dGhlbGF6eWVuZ2luZXJkK3RvZG9zQGdtYWlsLmNvbQAwRQIhAISMwaB6OjTfKXbl5M1Iy8GAipgnl/+O0aWvQs65CcFpAiBtYCaNlyvKrpsFzbBXVIMRAsIuGFsIdbeDvnldMxDTUg==
+    DATABASE_URL: postgres://postgres:p0stgres@127.0.0.1:3543/appdb
 
 # you can add packaging information here
 #package:
@@ -62,6 +63,13 @@ functions:
     events:
       - http:
           path: hello
+          method: GET
+
+  todo_list:
+    handler: todos.list
+    events:
+      - http:
+          path: todos
           method: GET
 
 #    The following are a few example events you can configure
