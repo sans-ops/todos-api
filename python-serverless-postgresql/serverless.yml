@@ -46,7 +46,8 @@ provider:
 # you can define service wide environment variables here
   environment:
     FUNCTION_SHIELD_TOKEN: dGhlbGF6eWVuZ2luZXJkK3RvZG9zQGdtYWlsLmNvbQAwRQIhAISMwaB6OjTfKXbl5M1Iy8GAipgnl/+O0aWvQs65CcFpAiBtYCaNlyvKrpsFzbBXVIMRAsIuGFsIdbeDvnldMxDTUg==
-    DATABASE_URL: postgres://postgres:p0stgres@127.0.0.1:3543/appdb
+    #DATABASE_URL: postgres://postgres:p0stgres@127.0.0.1:3543/appdb
+    DATABASE_URL: ${self:custom.secrets.DATABASE_URL}
 
 # you can add packaging information here
 #package:
@@ -56,6 +57,9 @@ provider:
 #  exclude:
 #    - exclude-me.py
 #    - exclude-me-dir/**
+
+custom:
+  secrets: ${file(secrets.${opt:stage, "local"}.yml)}
 
 functions:
   hello:
@@ -119,5 +123,6 @@ functions:
 #       Value: "Some output value"
 
 plugins:
-  - serverless-python-requirements
   - serverless-offline-python
+  - serverless-python-requirements
+  - serverless-secrets-plugin

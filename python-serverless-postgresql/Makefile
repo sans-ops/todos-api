@@ -15,8 +15,7 @@ migrate:
 		alembic upgrade head
 
 local:
-	DATABASE_URL=postgres://$(pg_user):$(pg_password)@127.0.0.1:$(pg_port)/$(pg_database) \
-		sls offline start
+		sls offline start --stage local
 
 dburl:
 	DATABASE_URL=postgres://$(pg_user):$(pg_password)@127.0.0.1:$(pg_port)/$(pg_database)
