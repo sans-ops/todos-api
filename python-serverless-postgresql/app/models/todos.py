@@ -9,7 +9,7 @@ class Todo(Base):
     id = Column(UUID(as_uuid=True), unique=True, nullable=False, primary_key=True, server_default=text("gen_random_uuid()"))
     title = Column(String)
     created_at = Column(DateTime, server_default=func.now())
-    items = relationship('Item')
+    _items = relationship('Item')
 
     def __init__(self, title):
         self.title = title

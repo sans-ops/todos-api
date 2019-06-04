@@ -1,4 +1,5 @@
 import os
+import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import app.common.security
@@ -7,14 +8,37 @@ from app.common.response import (
 )
 import app.controllers.todos
 
-engine = create_engine(os.getenv("DATABASE_URL", ""))
+engine = create_engine(os.getenv(
+            "DATABASE_URL", ""),
+            json_serializer=json.dumps
+        )
 connection = engine.connect()
 Session = sessionmaker(bind=engine)
 session = Session()
 
+
+
 def list(event, context):
-    data = app.controllers.todos.list(session)
-    return data_response(200, data)
+    data = []
+    code = 500
+    try:
+        data = app.controllers.todos.list(session)
+        code = 200
+    except Exception as e:
+        error_response(code, e.message)
+    return data_response(code, data)
+
+
+
+def create(event, context):
+    if not event["body"]:
+        return error_response(500, "empty body")
+    body = json.loads(event["body"])
+    if "title" not in body:
+        return error_response(500, "no title given")
+    title = body["title"]
+    todo = app.controllers.todos.create(session, title)
+    return data_response(201, todo)
 
 
 

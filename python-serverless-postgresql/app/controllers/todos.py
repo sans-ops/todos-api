@@ -10,4 +10,7 @@ def list(session: Session):
 
 
 def create(session: Session, title: str):
-    pass
+    todo = Todo(title)
+    session.add(todo)
+    session.commit()
+    return todo
