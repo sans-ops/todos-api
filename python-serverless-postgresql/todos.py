@@ -25,7 +25,7 @@ def list(event, context):
         data = app.controllers.todos.list(session)
         code = 200
     except Exception as e:
-        error_response(code, e.message)
+        return error_response(code, str(e))
     return data_response(code, data)
 
 
@@ -41,6 +41,17 @@ def create(event, context):
     return data_response(201, todo)
 
 
+
+def retrieve(event, context):
+    data = []
+    code = 500
+    id = event["pathParameters"]["id"]
+    try:
+        data = app.controllers.todos.retrieve(session, id)
+        code = 200
+    except Exception as e:
+        return error_response(code, str(e))
+    return data_response(code, data)
 
 #def create(event, context):
 #    if not event["body"]:

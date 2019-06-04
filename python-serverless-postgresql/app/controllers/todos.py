@@ -14,3 +14,10 @@ def create(session: Session, title: str):
     session.add(todo)
     session.commit()
     return todo
+
+
+def retrieve(session: Session, id: str):
+    data = session.query(Todo) \
+            .filter(Todo.id == id) \
+            .all()
+    return data
