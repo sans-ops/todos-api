@@ -34,3 +34,11 @@ def update(session: Session, id: str, fields):
         record.title = fields["title"]
     session.commit()
     return data
+
+
+def delete(session: Session, id: str):
+    data = session.query(Todo)\
+            .filter(Todo.id == id) \
+            .delete(synchronize_session=False)
+    session.commit()
+    return data

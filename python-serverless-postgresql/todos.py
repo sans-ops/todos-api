@@ -73,6 +73,19 @@ def update(event, context):
     return data_response(code, data)
 
 
+
+def delete(event, context):
+    data = []
+    code = 500
+    id = event["pathParameters"]["id"]
+    try:
+        data = app.controllers.todos \
+            .delete(session, id)
+        code = 200
+    except Exception as e:
+        return error_response(code, str(e))
+    return data_response(code, data)
+
 #def create(event, context):
 #    if not event["body"]:
 #        return error_response(500, "empty body")
