@@ -12,7 +12,5 @@
 1. https://github.com/serverless/examples/tree/master/aws-node-env-variables-encrypted-in-a-file
 1. https://auth0.com/blog/sqlalchemy-orm-tutorial-for-python-developers/
 1. https://stackoverflow.com/questions/5022066/how-to-serialize-sqlalchemy-result-to-json
-
-
-
-1. https://stackoverflow.com/questions/270879/efficiently-updating-database-using-sqlalchemy-orm
+1. http://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/
+1. https://docs.python.org/3/library/http.html

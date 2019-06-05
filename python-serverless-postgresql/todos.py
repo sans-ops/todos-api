@@ -1,5 +1,6 @@
 import os
 import json
+from http import HTTPStatus
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import app.common.security
@@ -20,10 +21,10 @@ session = Session()
 
 def list(event, context):
     data = []
-    code = 500
+    code = HTTPStatus.INTERNAL_SERVER_ERROR
     try:
         data = app.controllers.todos.list(session)
-        code = 200
+        code = HTTPStatus.OK
     except Exception as e:
         return error_response(code, str(e))
     return data_response(code, data)
@@ -31,24 +32,27 @@ def list(event, context):
 
 
 def create(event, context):
+    data = []
+    code = HTTPStatus.INTERNAL_SERVER_ERROR
     if not event["body"]:
-        return error_response(500, "empty body")
+        return error_response(code, "empty body")
     body = json.loads(event["body"])
     if "title" not in body:
-        return error_response(500, "no title given")
+        return error_response(code, "no title given")
     title = body["title"]
-    todo = app.controllers.todos.create(session, title)
-    return data_response(201, todo)
+    data = app.controllers.todos.create(session, title)
+    code = HTTPStatus.CREATED
+    return data_response(code, data)
 
 
 
 def retrieve(event, context):
     data = []
-    code = 500
+    code = HTTPStatus.INTERNAL_SERVER_ERROR
     id = event["pathParameters"]["id"]
     try:
         data = app.controllers.todos.retrieve(session, id)
-        code = 200
+        code = HTTPStatus.OK
     except Exception as e:
         return error_response(code, str(e))
     return data_response(code, data)
@@ -57,17 +61,17 @@ def retrieve(event, context):
 
 def update(event, context):
     data = []
-    code = 500
+    code = HTTPStatus.INTERNAL_SERVER_ERROR
     if not event["body"]:
-        return error_response(500, "empty body")
+        return error_response(code, "empty body")
     body = json.loads(event["body"])
     if "title" not in body:
-        return error_response(500, "no title given")
+        return error_response(code, "no title given")
     id = event["pathParameters"]["id"]
     try:
         data = app.controllers.todos \
             .update(session, id, {"title": body["title"]})
-        code = 200
+        code = HTTPStatus.OK
     except Exception as e:
         return error_response(code, str(e))
     return data_response(code, data)
@@ -76,80 +80,12 @@ def update(event, context):
 
 def delete(event, context):
     data = []
-    code = 500
+    code = HTTPStatus.INTERNAL_SERVER_ERROR
     id = event["pathParameters"]["id"]
     try:
         data = app.controllers.todos \
             .delete(session, id)
-        code = 200
+        code = HTTPStatus.OK
     except Exception as e:
         return error_response(code, str(e))
     return data_response(code, data)
-
-#def create(event, context):
-#    if not event["body"]:
-#        return error_response(500, "empty body")
-#    body = json.loads(event["body"])
-#    if "title" not in body:
-#        return error_response(500, "no title given")
-#    title = body["title"]
-#    todo = Todo(
-#        id=str(uuid.uuid4()),
-#        title=title,
-#        created_at=datetime.datetime.now()
-#    )
-#    data = todo.save()
-#    d = {
-#        "id": todo.id,
-#        "title": todo.title,
-#        "created_at": str(todo.created_at)
-#    }
-#    return data_response(200, d)
-#
-#
-#
-#def retrieve(event, context):
-#    data = []
-#    id = event["pathParameters"]["id"]
-#    for todo in Todo.batch_get([id]):
-#        d = {
-#            "id": todo.id,
-#            "title": todo.title,
-#            "created_at": str(todo.created_at)
-#        }
-#        data.append(d)
-#    return data_response(200, data)
-#
-#
-#
-#def update(event, context):
-#    data = []
-#    if not event["body"]:
-#        return error_response(500, "empty body")
-#    body = json.loads(event["body"])
-#    if "title" not in body:
-#        return error_response(500, "no title given")
-#    id = event["pathParameters"]["id"]
-#    for todo in Todo.batch_get([id]):
-#        todo.title = body["title"]
-#        todo.update({
-#            "title": {
-#                "value": body["title"],
-#                "action": "PUT"
-#            }
-#        })
-#        d = {
-#            "id": todo.id,
-#            "title": todo.title,
-#            "created_at": str(todo.created_at)
-#        }
-#        data.append(d)
-#    return data_response(200, data)
-#
-#
-#
-#def delete(event, context):
-#    id = event["pathParameters"]["id"]
-#    for todo in Todo.batch_get([id]):
-#        todo.delete()
-#    return data_response(200, [])
