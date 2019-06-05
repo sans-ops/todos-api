@@ -53,6 +53,26 @@ def retrieve(event, context):
         return error_response(code, str(e))
     return data_response(code, data)
 
+
+
+def update(event, context):
+    data = []
+    code = 500
+    if not event["body"]:
+        return error_response(500, "empty body")
+    body = json.loads(event["body"])
+    if "title" not in body:
+        return error_response(500, "no title given")
+    id = event["pathParameters"]["id"]
+    try:
+        data = app.controllers.todos \
+            .update(session, id, {"title": body["title"]})
+        code = 200
+    except Exception as e:
+        return error_response(code, str(e))
+    return data_response(code, data)
+
+
 #def create(event, context):
 #    if not event["body"]:
 #        return error_response(500, "empty body")

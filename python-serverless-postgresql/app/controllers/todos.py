@@ -21,3 +21,16 @@ def retrieve(session: Session, id: str):
             .filter(Todo.id == id) \
             .all()
     return data
+
+
+def update(session: Session, id: str, fields):
+    f = {
+        Todo.title: fields["title"]
+    }
+    data = session.query(Todo) \
+            .filter(Todo.id == id) \
+            .all()
+    for record in data:
+        record.title = fields["title"]
+    session.commit()
+    return data

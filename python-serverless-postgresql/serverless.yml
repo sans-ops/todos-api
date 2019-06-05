@@ -90,6 +90,14 @@ functions:
           path: todos/{id}
           method: GET
 
+  todo_update:
+    handler: todos.update
+    events:
+      - http:
+          path: todos/{id}
+          method: PATCH
+
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
