@@ -3,6 +3,7 @@ pg_user = postgres
 pg_password = p0stgres
 pg_database = appdb
 pg_port = 3543
+stage ?= local
 
 create update:
 	sls deploy
@@ -15,7 +16,10 @@ migrate:
 		alembic upgrade head
 
 local:
-		sls offline start --stage local
+	sls offline start --stage $(stage)
+
+decrypt:
+	sls decrypt --stage $(stage) --password '$(password)'
 
 dburl:
 	DATABASE_URL=postgres://$(pg_user):$(pg_password)@127.0.0.1:$(pg_port)/$(pg_database)

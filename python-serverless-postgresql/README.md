@@ -14,3 +14,4 @@
 1. https://stackoverflow.com/questions/5022066/how-to-serialize-sqlalchemy-result-to-json
 1. http://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/
 1. https://docs.python.org/3/library/http.html
+1. https://github.com/serverless/examples/tree/master/aws-node-env-variables-encrypted-in-a-file
