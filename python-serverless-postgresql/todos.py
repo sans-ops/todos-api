@@ -4,6 +4,7 @@ from http import HTTPStatus
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import app.common.security
+from app.common.counter import Counter
 from app.common.response import (
     data_response, error_response
 )
@@ -16,6 +17,20 @@ engine = create_engine(os.getenv(
 connection = engine.connect()
 Session = sessionmaker(bind=engine)
 session = Session()
+counter = Counter()
+
+
+def metadata(event, context):
+    body = {
+        "message": "Go Serverless v1.0! Your function executed successfully!",
+        "input": event,
+        "counter": counter.identify()
+    }
+    response = {
+        "statusCode": 200,
+        "body": json.dumps(body)
+    }
+    return response
 
 
 

@@ -1,10 +1,21 @@
+import app.common.security
 import json
+import socket
+from app.common.counter import Counter
 
+counter = Counter()
+hostname = socket.gethostname()
+host_ip = socket.gethostbyname(hostname)
 
 def hello(event, context):
     body = {
         "message": "Go Serverless v1.0! Your function executed successfully!",
-        "input": event
+        "input": event,
+        "counter": counter.identify(),
+        "host": {
+            "host_name": hostname,
+            "host_ip": host_ip
+        }
     }
 
     response = {
